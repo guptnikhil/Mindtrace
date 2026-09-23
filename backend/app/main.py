@@ -16,13 +16,13 @@ app = FastAPI(
     description="MindTrace: Early-warning student wellbeing companion & pattern indicator API for engineering students."
 )
 
-# CORS configuration
+# CORS configuration - Production explicit origins + Vercel preview regex match
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
-    allow_origin_regex=r".*",
+    allow_origins=settings.cors_origins,
+    allow_origin_regex=r"https://.*\.vercel\.app|http://localhost:.*|http://127\.0\.0\.1:.*|https://.*\.onrender\.com|https://.*\.railway\.app",
     allow_credentials=True,
-    allow_methods=["*"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allow_headers=["*"],
 )
 
@@ -49,6 +49,10 @@ def root():
         "version": settings.VERSION,
         "disclaimer": "An early-warning wellbeing support system. Not a medical diagnosis or clinical assessment."
     }
+
+@app.get("/health")
+def top_level_health():
+    return {"status": "ok"}
 
 if __name__ == "__main__":
     import uvicorn
