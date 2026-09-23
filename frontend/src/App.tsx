@@ -24,14 +24,13 @@ export function App() {
   const [currentStudent, setCurrentStudent] = useState<Student | null>(null);
   const [latestAssessment, setLatestAssessment] = useState<WellbeingAssessment | null>(null);
 
-  // Initialize or fetch student on app load
+  // Initialize or fetch student on app load (without auto-redirecting away from welcome page)
   useEffect(() => {
     const savedStudentId = localStorage.getItem('wellbeing_student_id');
     if (savedStudentId) {
       StudentService.getStudent(savedStudentId)
         .then((stu) => {
           setCurrentStudent(stu);
-          setView('dashboard');
         })
         .catch(() => {
           localStorage.removeItem('wellbeing_student_id');
@@ -60,7 +59,12 @@ export function App() {
   return (
     <AppLayout currentView={view} navigate={setView}>
       {view === 'welcome' && (
-        <WelcomePage onStart={() => setView('consent')} onPrivacy={() => setView('consent')} />
+        <WelcomePage 
+          onStart={() => currentStudent ? setView('dashboard') : setView('consent')} 
+          onPrivacy={() => setView('consent')}
+          onGoToDashboard={() => setView('dashboard')}
+          hasStudentProfile={Boolean(currentStudent)}
+        />
       )}
       {view === 'consent' && (
         <ConsentPage onContinue={() => setView('onboarding')} onBack={() => setView('welcome')} />
