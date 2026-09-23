@@ -98,7 +98,7 @@ Below is the verified audit of what is actually built and functional in the Mind
 
 ### Member 5 — Technical Architecture & Security Lead
 - **Role**: Full-Stack Architecture, Database, Security, Privacy Enforcement.
-- **Key Knowledge**: React/Vite, FastAPI backend, Supabase PostgreSQL, RLS policies, minimum aggregation threshold (10 students).
+- **Key Knowledge**: React/Vite, FastAPI backend, SQLite (SQLAlchemy ORM), minimum aggregation threshold (10 students).
 - **What They Say**: Tech stack overview & Privacy boundary (03:40-04:15).
 - **Expected Questions**: "How do you prevent student identification on the college dashboard?"
 - **Backup Answer**: "All aggregate queries enforce a server-side minimum threshold of 10 students. Any department cohort smaller than 10 returns a privacy-preserving notice."
