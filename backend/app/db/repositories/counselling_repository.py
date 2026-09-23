@@ -9,22 +9,29 @@ class CounsellingRepository:
 
     def seed_demo_counsellors_if_empty(self):
         """Seeds realistic deterministic demo counsellors and availabilities if database is empty."""
-        count = self.db.query(Counsellor).count()
-        if count > 0:
+        existing = self.db.query(Counsellor).all()
+        if existing:
+            updated = False
+            for c in existing:
+                if c.phone_number != "+919919963335":
+                    c.phone_number = "+919919963335"
+                    updated = True
+            if updated:
+                self.db.commit()
             return
 
         c1 = Counsellor(
             id="counsellor_mehta",
             name="Dr. Mehta",
             role="College Counsellor",
-            phone_number="+919876543210",
+            phone_number="+919919963335",
             active=True
         )
         c2 = Counsellor(
             id="counsellor_sharma",
             name="Dr. Sharma",
             role="Senior Student Counsellor",
-            phone_number="+919876543211",
+            phone_number="+919919963335",
             active=True
         )
         self.db.add_all([c1, c2])

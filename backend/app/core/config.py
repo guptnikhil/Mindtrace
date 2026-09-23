@@ -12,7 +12,7 @@ class Settings(BaseModel):
     ENVIRONMENT: str = os.getenv("ENVIRONMENT", "development")
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./mindtrace.db")
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
-    WHATSAPP_COUNSELLOR_NUMBER: str = os.getenv("WHATSAPP_COUNSELLOR_NUMBER", "+919876543210")
+    WHATSAPP_COUNSELLOR_NUMBER: str = os.getenv("WHATSAPP_COUNSELLOR_NUMBER", "+919919963335")
     
     # Allowed origins for CORS configuration
     FRONTEND_URLS: str = os.getenv("FRONTEND_URLS", "")

@@ -12,7 +12,7 @@ def build_whatsapp_handoff(
     CRITICAL PRIVACY RULE: Never includes risk scores, behavioural signals, notes, or diagnoses.
     """
     # Environment configurable phone number fallback
-    target_number = custom_phone or getattr(settings, "WHATSAPP_COUNSELLOR_NUMBER", "+919876543210")
+    target_number = custom_phone or getattr(settings, "WHATSAPP_COUNSELLOR_NUMBER", "+919919963335")
     # Clean phone number (strip spaces/dashes)
     clean_number = "".join([c for c in target_number if c.isdigit() or c == "+"])
 

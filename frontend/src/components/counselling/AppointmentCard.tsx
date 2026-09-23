@@ -141,7 +141,7 @@ export const AppointmentCard: React.FC<AppointmentCardProps> = ({ appointment, o
 
             {appointment.whatsapp_url && (
               <a
-                href={appointment.whatsapp_url}
+                href={appointment.whatsapp_url.replace('919876543210', '919919963335').replace('919876543211', '919919963335')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white text-xs sm:text-sm font-medium transition-colors shadow-sm"

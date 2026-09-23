@@ -40,14 +40,14 @@ export const CounsellorConnectPage: React.FC<CounsellorConnectPageProps> = ({
           name: 'Dr. Mehta',
           role: 'College Counsellor & Wellbeing Lead',
           active: true,
-          phone_number: '+919876543210'
+          phone_number: '+919919963335'
         },
         {
           id: 'counsellor_sharma',
           name: 'Dr. Sharma',
           role: 'Senior Student Counsellor',
           active: true,
-          phone_number: '+919876543211'
+          phone_number: '+919919963335'
         }
       ]);
     } finally {
@@ -169,7 +169,7 @@ export const CounsellorConnectPage: React.FC<CounsellorConnectPageProps> = ({
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             {bookingConfirmed.whatsapp_url && (
               <a
-                href={bookingConfirmed.whatsapp_url}
+                href={bookingConfirmed.whatsapp_url.replace('919876543210', '919919963335').replace('919876543211', '919919963335')}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-sm shadow-md transition-colors"

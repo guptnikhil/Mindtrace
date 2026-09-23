@@ -42,6 +42,7 @@ def test_book_appointment_flow():
     appt = res.json()
     assert appt["counsellor_name"] == "Dr. Mehta"
     assert "wa.me" in appt["whatsapp_url"]
+    assert "9919963335" in appt["whatsapp_url"]
     assert "burnout" not in appt["whatsapp_url"].lower()
     assert "risk" not in appt["whatsapp_url"].lower()
 
