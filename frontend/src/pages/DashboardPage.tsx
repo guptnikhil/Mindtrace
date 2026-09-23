@@ -3,6 +3,7 @@ import { ArrowRight, Info, RefreshCw, Calendar, Sparkles, AlertCircle, Activity,
 import type { View, Student, Checkin, Nudge, Appointment, DemoState } from '../types/wellbeing';
 import { StudentService, CheckinService, NudgeService, CounsellingService, apiClient } from '../services/api';
 import { AppointmentCard } from '../components/counselling/AppointmentCard';
+import { CalmCompanionChat } from '../components/chat/CalmCompanionChat';
 import { PatternTimeline } from '../components/dashboard/PatternTimeline';
 import { CounterfactualExplorer } from '../components/dashboard/CounterfactualExplorer';
 
@@ -16,6 +17,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
   const [checkins, setCheckins] = useState<Checkin[]>([]);
   const [nudges, setNudges] = useState<Nudge[]>([]);
   const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [companionOpen, setCompanionOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [demoState, setDemoState] = useState<DemoState>('changing');
@@ -294,6 +296,28 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
             </button>
           </div>
 
+          {/* Calm Mind Companion CTA Card (Positioned directly below College Counsellor) */}
+          <div className="rounded-2xl border border-teal-200 dark:border-teal-800/60 bg-teal-50/60 dark:bg-teal-950/30 p-6 shadow-xs">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-300">
+                <Sparkles size={15} /> Calm Mind
+              </div>
+              <span className="rounded-full bg-teal-100 dark:bg-teal-900/60 px-2 py-0.5 text-[10px] font-bold text-teal-800 dark:text-teal-200">
+                Quick &bull; Zero Judgment
+              </span>
+            </div>
+            <h3 className="mt-2 text-sm font-bold text-slate-900 dark:text-slate-100">Need a quick, judgment-free space?</h3>
+            <p className="mt-1 text-xs leading-5 text-slate-600 dark:text-slate-300">
+              Chat quietly with your companion anytime to get relaxed. No advice, no clinical labels—just safe space to process your thoughts.
+            </p>
+            <button
+              onClick={() => setCompanionOpen(true)}
+              className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-teal-700 hover:bg-teal-800 px-4 py-2.5 text-xs font-semibold text-white shadow-xs cursor-pointer transition-colors"
+            >
+              Talk to Calm Companion <ArrowRight size={14} />
+            </button>
+          </div>
+
           <div className="rounded-2xl border border-[#dce9e4] bg-white p-6 shadow-xs dark:border-[#253d37] dark:bg-[#182824]">
             <div className="flex items-center justify-between mb-3">
               <span className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-[#a47b54] dark:text-[#d4a373]">
@@ -346,6 +370,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
       <div className="mt-6 flex items-center gap-2 text-xs text-[#93a5a0] dark:text-[#78938b]">
         <Info size={14} /> Early-warning wellbeing indicator connected to FastAPI backend. This is not a clinical medical diagnosis.
       </div>
+
+      {/* Calm Companion Chat Modal */}
+      <CalmCompanionChat
+        isOpen={companionOpen}
+        onClose={() => setCompanionOpen(false)}
+        onOpenCounsellor={() => navigate('counsellor')}
+      />
     </div>
   );
 };

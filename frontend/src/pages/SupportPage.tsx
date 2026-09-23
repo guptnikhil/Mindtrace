@@ -1,12 +1,15 @@
-import React from 'react';
-import { HeartHandshake, ArrowRight, LockKeyhole, ArrowLeft, PhoneCall } from 'lucide-react';
+import React, { useState } from 'react';
+import { HeartHandshake, ArrowRight, LockKeyhole, ArrowLeft, PhoneCall, Sparkles } from 'lucide-react';
 import type { View } from '../types/wellbeing';
+import { CalmCompanionChat } from '../components/chat/CalmCompanionChat';
 
 interface SupportPageProps {
   navigate: (view: View) => void;
 }
 
 export const SupportPage: React.FC<SupportPageProps> = ({ navigate }) => {
+  const [companionOpen, setCompanionOpen] = useState(false);
+
   return (
     <div className="mx-auto max-w-4xl px-5 py-8 sm:px-8 lg:py-12">
       <div className="mb-8 flex items-start gap-4">
@@ -18,18 +21,19 @@ export const SupportPage: React.FC<SupportPageProps> = ({ navigate }) => {
             <ArrowLeft size={14} /> Back to dashboard
           </button>
           <p className="mb-2 text-xs font-semibold uppercase tracking-[0.18em] text-[#a47b54] dark:text-[#d4a373]">
-            Human support
+            Support Options
           </p>
           <h1 className="text-3xl font-semibold tracking-[-0.035em] text-[#1e3c35] dark:text-[#e2ece8] sm:text-4xl">
             You don’t have to handle everything alone.
           </h1>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[#718983] dark:text-[#9bb3ab] sm:text-base">
-            If talking to someone would help, you can connect directly with a college counsellor. Nothing is shared until you decide to reach out.
+            Choose the support that works best for you right now—whether you want a 1-on-1 session with a campus counselor or an instant, private space to process and unwind.
           </p>
         </div>
       </div>
 
       <div className="grid gap-4">
+        {/* College Counselor Option */}
         <div className="flex flex-col gap-4 rounded-2xl border border-[#e0eae6] bg-white p-5 shadow-xs transition-all hover:border-[#b9d4ca] sm:flex-row sm:items-center sm:p-6 dark:border-[#203a33] dark:bg-[#122420]">
           <div className="grid size-12 shrink-0 place-items-center rounded-xl bg-[#edf6f2] text-[#2f6f64] dark:bg-[#1b3b33] dark:text-[#6ec4b2]">
             <HeartHandshake size={24} />
@@ -37,7 +41,7 @@ export const SupportPage: React.FC<SupportPageProps> = ({ navigate }) => {
           <div className="flex-1">
             <h2 className="text-lg font-semibold text-[#35584f] dark:text-[#e2ece8]">Talk to a College Counselor</h2>
             <p className="mt-1 text-sm text-[#78908a] dark:text-[#9bb3ab]">
-              A private space to talk through what’s on your mind. Schedule a 15-minute support session or connect directly via WhatsApp.
+              A private, confidential space with verified campus wellbeing staff. Schedule a 15-minute support session or connect directly via WhatsApp.
             </p>
           </div>
           <button
@@ -45,6 +49,31 @@ export const SupportPage: React.FC<SupportPageProps> = ({ navigate }) => {
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 px-5 py-3 text-sm font-semibold text-white shadow-xs transition-colors cursor-pointer"
           >
             Book a Session <ArrowRight size={16} />
+          </button>
+        </div>
+
+        {/* Calm Mind Companion - Positioned directly below College Counselor */}
+        <div className="flex flex-col gap-4 rounded-2xl border border-teal-200 bg-teal-50/70 p-5 shadow-xs transition-all hover:border-teal-300 sm:flex-row sm:items-center sm:p-6 dark:border-teal-800/60 dark:bg-teal-950/30">
+          <div className="grid size-12 shrink-0 place-items-center rounded-xl bg-teal-100 text-teal-700 dark:bg-teal-900/60 dark:text-teal-300">
+            <Sparkles size={24} />
+          </div>
+          <div className="flex-1">
+            <div className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-teal-700 dark:text-teal-300 mb-1">
+              <span>Quick AI Companion</span>
+              <span className="rounded-full bg-teal-200/80 px-2 py-0.5 text-[10px] font-bold text-teal-800 dark:bg-teal-900 dark:text-teal-200">
+                Zero Judgment &bull; Instant
+              </span>
+            </div>
+            <h2 className="text-lg font-semibold text-[#1e3c35] dark:text-[#e2ece8]">Calm Mind Companion</h2>
+            <p className="mt-1 text-sm text-[#5d7c73] dark:text-[#9bb3ab]">
+              Need a quick, judgment-free space to talk right now? Chat quietly with your companion anytime to get relaxed. No advice, no clinical labels—just safe space to process your thoughts.
+            </p>
+          </div>
+          <button
+            onClick={() => setCompanionOpen(true)}
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-700 hover:bg-teal-800 px-5 py-3 text-sm font-semibold text-white shadow-xs transition-colors cursor-pointer"
+          >
+            Start Chatting <ArrowRight size={16} />
           </button>
         </div>
       </div>
@@ -67,6 +96,16 @@ export const SupportPage: React.FC<SupportPageProps> = ({ navigate }) => {
           </p>
         </div>
       </div>
+
+      {/* Calm Companion Chat Modal */}
+      <CalmCompanionChat
+        isOpen={companionOpen}
+        onClose={() => setCompanionOpen(false)}
+        onOpenCounsellor={() => {
+          setCompanionOpen(false);
+          navigate('counsellor');
+        }}
+      />
     </div>
   );
 };
