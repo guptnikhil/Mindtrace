@@ -30,7 +30,7 @@ export const CheckinPage: React.FC<CheckinPageProps> = ({
     setErrorMessage(null);
 
     try {
-      // 1. Submit Check-in to FastAPI -> Supabase DB
+      // 1. Submit Check-in to FastAPI -> SQLite DB
       await CheckinService.submitCheckin({
         student_id: studentId,
         mood,
@@ -86,7 +86,7 @@ export const CheckinPage: React.FC<CheckinPageProps> = ({
         <RefreshCw size={36} className="animate-spin text-[#2f6f64] dark:text-[#6ec4b2] mb-4" />
         <h2 className="text-xl font-semibold text-[#1e3c35] dark:text-[#e2ece8]">Analyzing your latest check-in...</h2>
         <p className="mt-2 text-sm max-w-sm">
-          Processing routine pattern metrics securely via FastAPI & storing record in Supabase database.
+          Processing routine pattern metrics securely via FastAPI & storing record in SQLite database.
         </p>
       </div>
     );

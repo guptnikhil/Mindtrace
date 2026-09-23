@@ -13,7 +13,7 @@ def analyze_wellbeing_route(req: AnalyzeRequest, db: Session = Depends(get_db)):
     """
     POST /api/wellbeing/analyze
     Analyzes student check-in/wellbeing inputs, runs deterministic risk scoring,
-    stores assessment in Supabase DB, and returns structured result.
+    stores assessment in SQLite DB, and returns structured result.
     """
     student_repo = StudentRepository(db)
     student = student_repo.get_by_id(req.student_id) or student_repo.get_by_identifier(req.student_id)

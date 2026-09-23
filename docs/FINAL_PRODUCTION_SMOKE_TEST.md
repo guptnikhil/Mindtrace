@@ -5,7 +5,7 @@ Frontend: https://mindtrace-app-rho.vercel.app
 Backend: https://mindtrace-jxh0.onrender.com
 
 ## API Architecture
-Frontend → Vercel Edge Proxy (`/api/*`) → Render FastAPI Backend (`https://mindtrace-jxh0.onrender.com/api/*`) → Supabase PostgreSQL Database
+Frontend → Vercel Edge Proxy (`/api/*`) → Render FastAPI Backend (`https://mindtrace-jxh0.onrender.com/api/*`) → SQLite Database (SQLAlchemy ORM)
 
 ## Tests
 | Test | Status | Evidence |
@@ -32,7 +32,7 @@ OPTIONS result: HTTP 200 OK (Clean CORS headers returned for configured origins,
 Actual value: `/api` (Vercel Edge rewrite rule in `vercel.json` forwards `/api/:path*` to `https://mindtrace-jxh0.onrender.com/api/:path*`)
 
 ## Appointment Flow
-Status: PASS — End-to-end booking, slot validation, Supabase state update, and appointment retrieval operational.
+Status: PASS — End-to-end booking, slot validation, SQLite state update, and appointment retrieval operational.
 
 ## WhatsApp
 Implementation: DEEP LINK (`wa.me`)
@@ -56,7 +56,7 @@ Status: PASS — No API keys in frontend assets, no service role keys exposed, C
 
 ## Remaining Manual Steps
 1. Verify WhatsApp desktop app / web link opening by clicking "Continue on WhatsApp" in browser UI.
-2. Verify live Render environment variables (`GEMINI_API_KEY`, `SUPABASE_URL`, `SUPABASE_ANON_KEY`) in Render Dashboard if live AI model switching is required.
+2. Verify live Render environment variable (`GEMINI_API_KEY`) in Render Dashboard if live AI model switching is required.
 
 ## Final Verdict
 

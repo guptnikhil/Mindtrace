@@ -35,7 +35,7 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ navigate }) => {
           <div className="mt-4 divide-y divide-[#edf2ef]">
             {[
               ['FastAPI Backend API', 'All student data is processed securely through FastAPI endpoints.'],
-              ['Supabase PostgreSQL Database', 'Persistent storage configured with strict relational schema & foreign keys.'],
+              ['SQLite Database (SQLAlchemy ORM)', 'Persistent storage configured with strict relational schema & foreign keys.'],
               ['Frontend Security', 'Zero API keys, service role keys, or database credentials exposed to client bundle.'],
               ['Non-diagnostic Phrasing', 'Risk results strictly use supportive non-diagnostic language.'],
             ].map(([title, desc]) => (

@@ -106,7 +106,7 @@ export const TrendDetailPage: React.FC<TrendDetailPageProps> = ({ navigate }) =>
           <div>
             <p className="text-sm font-semibold text-[#5f4834]">How baseline comparison works</p>
             <p className="mt-1.5 text-sm leading-6 text-[#846b54]">
-              We compute your personal baseline from earlier routine signals in Supabase PostgreSQL, then compare the last seven days against it. We never compare you with other students.
+              We compute your personal baseline from earlier routine signals in local engine database, then compare the last seven days against it. We never compare you with other students.
             </p>
           </div>
         </div>
