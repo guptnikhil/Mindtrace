@@ -36,25 +36,18 @@ export const CounsellorConnectPage: React.FC<CounsellorConnectPageProps> = ({
       console.warn('Backend API offline or unconfigured, using seed counsellors list:', err);
       setCounsellors([
         {
-          id: 'cns_1',
-          name: 'Dr. Ananya Sharma',
-          role: 'Senior Student Counsellor & Clinical Psychologist',
+          id: 'counsellor_mehta',
+          name: 'Dr. Mehta',
+          role: 'College Counsellor & Wellbeing Lead',
           active: true,
           phone_number: '+919876543210'
         },
         {
-          id: 'cns_2',
-          name: 'Dr. Rajesh Kumar',
-          role: 'Academic Stress & Career Wellness Specialist',
+          id: 'counsellor_sharma',
+          name: 'Dr. Sharma',
+          role: 'Senior Student Counsellor',
           active: true,
           phone_number: '+919876543211'
-        },
-        {
-          id: 'cns_3',
-          name: 'Ms. Meera Patel',
-          role: 'Mindfulness & Behavioral Support Specialist',
-          active: true,
-          phone_number: '+919876543212'
         }
       ]);
     } finally {

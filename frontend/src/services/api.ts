@@ -20,14 +20,19 @@ import type {
   InstitutionalReport,
 } from '../types/wellbeing';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const isBrowser = typeof window !== 'undefined';
+const isLocalhost = isBrowser && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+// When deployed on Vercel or any non-localhost domain, always use relative '/api'
+// so all requests pass through the same-origin Vercel edge proxy rewrite (vercel.json).
+// This eliminates browser CORS preflight errors completely.
+const API_BASE_URL = isBrowser && !isLocalhost 
+  ? '/api' 
+  : (import.meta.env.VITE_API_BASE_URL || '/api');
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  headers: {
-    'Content-Type': 'application/json',
-  },
-  timeout: 10000,
+  timeout: 15000,
 });
 
 export const StudentService = {
