@@ -120,7 +120,7 @@ MindTrace was engineered around a core tenet: **Engineering students resist clin
     * **Join Session**: Opens automated Jitsi Meet video room.
     * **Continue on WhatsApp**: Opens non-diagnostic coordination chat with `+91 99199 63335`.
     * **Reschedule / Cancel**: Modifies appointment with live slot availability checking.
-  * **Quick Launchers**: Fast access to Daily Check-in, Calm Companion AI Chat, and Wellness Resources.
+  * **Quick Launchers**: Fast access to Daily Check-in, Counsellor Connect, and Wellness Resources.
 
 ---
 
@@ -217,11 +217,9 @@ MindTrace was engineered around a core tenet: **Engineering students resist clin
 ### 3.12 Human Support Directory & Crisis Safe-Net
 * **Location**: [`frontend/src/pages/SupportPage.tsx`](file:///Users/nikhilgupt/Downloads/wellbeing-companion-prototype/frontend/src/pages/SupportPage.tsx)
 * **Features**:
-  * **Tiered Human Support Options**:
-    * Talk to a Campus Counselor (Routes directly to Counsellor Connect).
-    * Peer Support Communities (Information on student-led circles).
-    * Campus Wellbeing Department (Directory of college mental health infrastructure).
-  * **Crisis Intervention Safe-Net**: Visible on support flows and Calm Companion chat:
+  * **Direct Counselor Support**:
+    * Talk to a College Counselor (Routes directly to Counsellor Connect for 15-minute slot reservations or WhatsApp coordination).
+  * **Crisis Intervention Safe-Net**: Visible on support flows:
     * **Tele-MANAS** (National Mental Health Helpline of India): `14416` or `1800-891-4416` (24/7 toll-free).
     * **AASRA Suicide Prevention Helpline**: `+91-9820466726` (24/7 volunteer crisis support).
     * **Emergency Call Services**: `112`.
