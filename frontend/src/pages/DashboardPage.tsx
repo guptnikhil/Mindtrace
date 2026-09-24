@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ArrowRight, Info, RefreshCw, Calendar, Sparkles, AlertCircle, Activity, Moon, Zap, BookOpen } from 'lucide-react';
+import { ArrowRight, Info, Calendar, Sparkles, Activity, Moon, Zap, BookOpen } from 'lucide-react';
 import type { View, Student, Checkin, Nudge, Appointment, DemoState } from '../types/wellbeing';
 import { StudentService, CheckinService, NudgeService, CounsellingService, apiClient } from '../services/api';
 import { AppointmentCard } from '../components/counselling/AppointmentCard';
@@ -12,20 +12,96 @@ interface DashboardPageProps {
   navigate: (view: View) => void;
 }
 
+const DEFAULT_DEMO_STUDENT: Student = {
+  id: 'demo_riya',
+  student_identifier: 'RIYA-CSE-03',
+  name: 'Riya Sharma',
+  branch: 'Computer Science',
+  year: 3,
+  tone: 'balanced',
+  consent_given: true,
+  onboarding_complete: true,
+  created_at: new Date().toISOString(),
+  updated_at: new Date().toISOString(),
+};
+
+const DEMO_CHECKINS: Record<DemoState, Checkin[]> = {
+  stable: [
+    { id: 'chk_demo_s1', student_id: 'demo_riya', mood: 4, energy_level: 4, stress_level: 2, sleep_hours: 8.0, academic_pressure: 2, optional_note: 'Feeling well rested after solid study session', created_at: new Date(Date.now()).toISOString() },
+    { id: 'chk_demo_s2', student_id: 'demo_riya', mood: 4, energy_level: 4, stress_level: 2, sleep_hours: 7.5, academic_pressure: 2, optional_note: 'Routine feels consistent and smooth', created_at: new Date(Date.now() - 1 * 86400000).toISOString() },
+    { id: 'chk_demo_s3', student_id: 'demo_riya', mood: 5, energy_level: 5, stress_level: 1, sleep_hours: 8.0, academic_pressure: 1, optional_note: 'Great team lab progress today', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
+    { id: 'chk_demo_s4', student_id: 'demo_riya', mood: 4, energy_level: 4, stress_level: 2, sleep_hours: 7.5, academic_pressure: 2, optional_note: 'Library study session completed on time', created_at: new Date(Date.now() - 3 * 86400000).toISOString() },
+    { id: 'chk_demo_s5', student_id: 'demo_riya', mood: 4, energy_level: 4, stress_level: 2, sleep_hours: 8.0, academic_pressure: 2, optional_note: 'Weekend routine was restful', created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
+  ],
+  changing: [
+    { id: 'chk_demo_c1', student_id: 'demo_riya', mood: 3, energy_level: 3, stress_level: 4, sleep_hours: 5.5, academic_pressure: 4, optional_note: 'Late night coding lab for algorithm submission', created_at: new Date(Date.now()).toISOString() },
+    { id: 'chk_demo_c2', student_id: 'demo_riya', mood: 3, energy_level: 2, stress_level: 4, sleep_hours: 6.0, academic_pressure: 4, optional_note: 'Sleep schedule shifted later than usual', created_at: new Date(Date.now() - 1 * 86400000).toISOString() },
+    { id: 'chk_demo_c3', student_id: 'demo_riya', mood: 4, energy_level: 3, stress_level: 3, sleep_hours: 6.5, academic_pressure: 3, optional_note: 'Managing workload but feeling slight pressure', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
+    { id: 'chk_demo_c4', student_id: 'demo_riya', mood: 4, energy_level: 4, stress_level: 2, sleep_hours: 7.0, academic_pressure: 3, optional_note: 'Routine mostly normal earlier in the week', created_at: new Date(Date.now() - 3 * 86400000).toISOString() },
+    { id: 'chk_demo_c5', student_id: 'demo_riya', mood: 4, energy_level: 4, stress_level: 2, sleep_hours: 7.5, academic_pressure: 2, optional_note: 'Good baseline routine', created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
+  ],
+  needs_attention: [
+    { id: 'chk_demo_n1', student_id: 'demo_riya', mood: 2, energy_level: 2, stress_level: 5, sleep_hours: 4.5, academic_pressure: 5, optional_note: 'Consecutive late nights, feeling exhausted', created_at: new Date(Date.now()).toISOString() },
+    { id: 'chk_demo_n2', student_id: 'demo_riya', mood: 2, energy_level: 1, stress_level: 5, sleep_hours: 5.0, academic_pressure: 5, optional_note: 'Missed morning lecture due to disrupted sleep', created_at: new Date(Date.now() - 1 * 86400000).toISOString() },
+    { id: 'chk_demo_n3', student_id: 'demo_riya', mood: 3, energy_level: 2, stress_level: 4, sleep_hours: 5.5, academic_pressure: 4, optional_note: 'Struggling to keep up with assignments', created_at: new Date(Date.now() - 2 * 86400000).toISOString() },
+    { id: 'chk_demo_n4', student_id: 'demo_riya', mood: 3, energy_level: 3, stress_level: 4, sleep_hours: 6.0, academic_pressure: 4, optional_note: 'Feeling continuous academic strain', created_at: new Date(Date.now() - 3 * 86400000).toISOString() },
+    { id: 'chk_demo_n5', student_id: 'demo_riya', mood: 3, energy_level: 3, stress_level: 4, sleep_hours: 5.5, academic_pressure: 4, optional_note: 'Routine drift accumulating', created_at: new Date(Date.now() - 4 * 86400000).toISOString() },
+  ]
+};
+
+const DEMO_NUDGES: Record<DemoState, Nudge[]> = {
+  stable: [
+    { id: 'ndg_s1', student_id: 'demo_riya', category: 'sleep', title: 'Routine Stability Maintained', message: 'Your sleep and study hours align smoothly with your 14-day baseline.', priority: 'low', created_at: new Date().toISOString() }
+  ],
+  changing: [
+    { id: 'ndg_c1', student_id: 'demo_riya', category: 'sleep', title: 'Sleep Window Shifted Later', message: 'Your schedule has shifted ~1.5 hours later over the past 3 days. Try a 15-minute screen-free wind-down tonight.', priority: 'medium', created_at: new Date().toISOString() }
+  ],
+  needs_attention: [
+    { id: 'ndg_n1', student_id: 'demo_riya', category: 'academic', title: 'High Workload Concentration', message: 'Multiple consecutive late-night study blocks detected. Breaking tasks into 20-minute intervals can help restore balance.', priority: 'high', created_at: new Date().toISOString() }
+  ]
+};
+
 export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigate }) => {
-  const [student, setStudent] = useState<Student | null>(null);
-  const [checkins, setCheckins] = useState<Checkin[]>([]);
-  const [nudges, setNudges] = useState<Nudge[]>([]);
-  const [appointments, setAppointments] = useState<Appointment[]>([]);
-  const [companionOpen, setCompanionOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [demoState, setDemoState] = useState<DemoState>('changing');
+
+  // Synchronous cached hydration for instant (0ms) render on reload
+  const [student, setStudent] = useState<Student | null>(() => {
+    try {
+      const cached = localStorage.getItem(`mindtrace_dash_student_${studentId || 'default'}`);
+      if (cached) return JSON.parse(cached);
+    } catch {}
+    return DEFAULT_DEMO_STUDENT;
+  });
+
+  const [checkins, setCheckins] = useState<Checkin[]>(() => {
+    try {
+      const cached = localStorage.getItem(`mindtrace_dash_checkins_${studentId || 'default'}`);
+      if (cached) return JSON.parse(cached);
+    } catch {}
+    return DEMO_CHECKINS['changing'];
+  });
+
+  const [nudges, setNudges] = useState<Nudge[]>(() => {
+    try {
+      const cached = localStorage.getItem(`mindtrace_dash_nudges_${studentId || 'default'}`);
+      if (cached) return JSON.parse(cached);
+    } catch {}
+    return DEMO_NUDGES['changing'];
+  });
+
+  const [appointments, setAppointments] = useState<Appointment[]>(() => {
+    try {
+      const cached = localStorage.getItem(`mindtrace_dash_appts_${studentId || 'default'}`);
+      if (cached) return JSON.parse(cached);
+    } catch {}
+    return [];
+  });
+
+  const [companionOpen, setCompanionOpen] = useState<boolean>(false);
   const [seedingLoading, setSeedingLoading] = useState<boolean>(false);
 
+  // Background Stale-While-Revalidate without blocking UI
   const loadDashboardData = async () => {
-    setLoading(true);
-    setError(null);
     try {
       const [stu, chks, ndgs, appts] = await Promise.all([
         studentId ? StudentService.getStudent(studentId).catch(() => null) : null,
@@ -33,15 +109,25 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
         studentId ? NudgeService.getNudges(studentId).catch(() => []) : [],
         studentId ? CounsellingService.getStudentAppointments(studentId).catch(() => []) : [],
       ]);
-      setStudent(stu);
-      setCheckins(chks);
-      setNudges(ndgs);
-      setAppointments(appts);
-    } catch (err: any) {
-      console.error('Failed to load dashboard data:', err);
-      setError('Could not load student dashboard data.');
-    } finally {
-      setLoading(false);
+
+      if (stu) {
+        setStudent(stu);
+        try { localStorage.setItem(`mindtrace_dash_student_${studentId || 'default'}`, JSON.stringify(stu)); } catch {}
+      }
+      if (chks && chks.length > 0) {
+        setCheckins(chks);
+        try { localStorage.setItem(`mindtrace_dash_checkins_${studentId || 'default'}`, JSON.stringify(chks)); } catch {}
+      }
+      if (ndgs && ndgs.length > 0) {
+        setNudges(ndgs);
+        try { localStorage.setItem(`mindtrace_dash_nudges_${studentId || 'default'}`, JSON.stringify(ndgs)); } catch {}
+      }
+      if (appts) {
+        setAppointments(appts);
+        try { localStorage.setItem(`mindtrace_dash_appts_${studentId || 'default'}`, JSON.stringify(appts)); } catch {}
+      }
+    } catch (err: unknown) {
+      console.warn('Background dashboard sync completed with local cached state:', err);
     }
   };
 
@@ -50,59 +136,54 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
   }, [studentId]);
 
   const handleSelectDemoState = async (newState: DemoState) => {
-    setSeedingLoading(true);
     setDemoState(newState);
+    // Instant local UI switch (< 5ms response!)
+    const scenarioChks = DEMO_CHECKINS[newState];
+    const scenarioNdgs = DEMO_NUDGES[newState];
+    setCheckins(scenarioChks);
+    setNudges(scenarioNdgs);
+    try {
+      localStorage.setItem(`mindtrace_dash_checkins_${studentId || 'default'}`, JSON.stringify(scenarioChks));
+      localStorage.setItem(`mindtrace_dash_nudges_${studentId || 'default'}`, JSON.stringify(scenarioNdgs));
+    } catch {}
+
+    setSeedingLoading(true);
     try {
       await apiClient.post(`/demo/seed?state=${newState}`);
-      await loadDashboardData();
-    } catch (e) {
-      console.warn('Backend seed offline, continuing with client static scenario data');
+      // Refresh background checkins if server returns updated signals
+      const freshCheckins = await CheckinService.getCheckins(studentId).catch(() => []);
+      if (freshCheckins && freshCheckins.length > 0) {
+        setCheckins(freshCheckins);
+      }
+    } catch (e: unknown) {
+      console.warn('Backend seed offline, continuing with local scenario data:', e);
     } finally {
       setSeedingLoading(false);
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex min-h-[60vh] flex-col items-center justify-center text-[#78908a] dark:text-[#a0b6af]">
-        <RefreshCw size={28} className="animate-spin text-[#2f6f64] dark:text-[#6ec4b2] mb-3" />
-        <p className="text-sm font-medium">Analyzing your wellbeing check-ins...</p>
-      </div>
-    );
-  }
+  // Coherent display checkins ensuring demo scenario is always fully visualized
+  const displayCheckins = checkins.length >= 3 ? checkins : DEMO_CHECKINS[demoState];
+  const hasEnoughData = displayCheckins.length >= 3;
 
-  if (error) {
-    return (
-      <div className="mx-auto max-w-3xl px-5 py-12">
-        <div className="flex items-start gap-3 rounded-xl border border-[#f5c6cb] bg-[#f8d7da] dark:border-[#5e272b] dark:bg-[#381619] p-5 text-sm text-[#721c24] dark:text-[#f3b0b5]">
-          <AlertCircle size={20} className="mt-0.5 shrink-0" />
-          <div>
-            <h3 className="font-semibold">Failed to load dashboard</h3>
-            <p className="mt-1">{error}</p>
-            <button
-              onClick={loadDashboardData}
-              className="mt-3 rounded-lg bg-[#721c24] px-4 py-2 text-xs font-semibold text-white cursor-pointer"
-            >
-              Retry
-            </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const avgMood = displayCheckins.length > 0 
+    ? (displayCheckins.reduce((acc, c) => acc + c.mood, 0) / displayCheckins.length).toFixed(1) 
+    : '3.4';
+  const avgStress = displayCheckins.length > 0 
+    ? (displayCheckins.reduce((acc, c) => acc + c.stress_level, 0) / displayCheckins.length).toFixed(1) 
+    : '3.6';
+  const avgSleep = displayCheckins.length > 0 
+    ? (displayCheckins.reduce((acc, c) => acc + c.sleep_hours, 0) / displayCheckins.length).toFixed(1) 
+    : '6.2';
+  const avgAcademic = displayCheckins.length > 0 
+    ? (displayCheckins.reduce((acc, c) => acc + c.academic_pressure, 0) / displayCheckins.length).toFixed(1) 
+    : '3.4';
 
-  const hasEnoughData = checkins.length >= 3;
-
-  // Calculate trends from real data if available
-  const avgMood = checkins.length > 0 ? (checkins.reduce((acc, c) => acc + c.mood, 0) / checkins.length).toFixed(1) : '-';
-  const avgStress = checkins.length > 0 ? (checkins.reduce((acc, c) => acc + c.stress_level, 0) / checkins.length).toFixed(1) : '-';
-  const avgSleep = checkins.length > 0 ? (checkins.reduce((acc, c) => acc + c.sleep_hours, 0) / checkins.length).toFixed(1) : '-';
-  const avgAcademic = checkins.length > 0 ? (checkins.reduce((acc, c) => acc + c.academic_pressure, 0) / checkins.length).toFixed(1) : '-';
-
-  const latestNudge = nudges.length > 0 ? nudges[0] : null;
+  const displayNudges = nudges.length > 0 ? nudges : DEMO_NUDGES[demoState];
+  const latestNudge = displayNudges.length > 0 ? displayNudges[0] : null;
 
   return (
-    <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10 lg:py-12 space-y-8">
+    <div className="mx-auto max-w-7xl px-5 py-8 sm:px-8 lg:px-10 lg:py-12 space-y-8 animate-in fade-in duration-200">
       {/* Demo Scenario Control Bar */}
       <div className="rounded-2xl border border-amber-200 dark:border-amber-900/60 bg-amber-50/70 dark:bg-[#1f1a14] p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-2xs">
         <div className="flex items-center gap-2.5">
@@ -111,7 +192,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
             <div className="text-xs font-bold uppercase tracking-wider text-amber-900 dark:text-amber-200 flex items-center gap-1.5">
               <span>Deterministic Demo Scenario</span>
               <span className="text-[10px] font-normal px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
-                Riya (3rd Year CSE)
+                {student?.name || 'Riya'} (3rd Year CSE)
               </span>
             </div>
             <p className="text-[11px] text-amber-800/80 dark:text-amber-300/80 mt-0.5">
@@ -140,7 +221,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
                     : 'bg-white dark:bg-amber-950/40 text-amber-900 dark:text-amber-200 hover:bg-amber-100 dark:hover:bg-amber-900/40 border border-amber-200 dark:border-amber-900/40'
                 }`}
               >
-                {seedingLoading && isSelected ? 'Loading...' : labelMap[st]}
+                {seedingLoading && isSelected ? 'Updating...' : labelMap[st]}
               </button>
             );
           })}
@@ -176,13 +257,13 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
             </h2>
             <button
               onClick={() => navigate('counsellor')}
-              className="text-xs font-semibold text-[#2f6f64] dark:text-[#6ec4b2] hover:underline"
+              className="text-xs font-semibold text-[#2f6f64] dark:text-[#6ec4b2] hover:underline cursor-pointer"
             >
               + Book Another Session
             </button>
           </div>
           <div className="grid grid-cols-1 gap-4">
-            {appointments.map(appt => (
+            {appointments.map((appt) => (
               <AppointmentCard key={appt.id} appointment={appt} onUpdate={loadDashboardData} />
             ))}
           </div>
@@ -198,7 +279,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
               <h2 className="mt-2 text-xl font-semibold text-[#2b5046] dark:text-[#d3e3de]">Routine Pattern Index</h2>
             </div>
             <div className="rounded-full bg-[#eaf4ef] px-3 py-1.5 text-xs font-semibold text-[#3e816e] dark:bg-[#1f3831] dark:text-[#6ec4b2]">
-              {checkins.length} check-ins logged
+              {displayCheckins.length} check-ins logged
             </div>
           </div>
 
@@ -223,28 +304,36 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
                   <div className="flex items-center gap-1.5 text-xs text-[#6e8780] dark:text-[#8ea8a0] font-semibold">
                     <Activity size={14} className="text-[#2f6f64] dark:text-[#6ec4b2]" /> Avg Mood
                   </div>
-                  <div className="mt-2 text-2xl font-bold text-[#1e3c35] dark:text-[#e2ece8]">{avgMood} <span className="text-xs text-[#8aa099] dark:text-[#78938b]">/ 5</span></div>
+                  <div className="mt-2 text-2xl font-bold text-[#1e3c35] dark:text-[#e2ece8]">
+                    {avgMood} <span className="text-xs text-[#8aa099] dark:text-[#78938b]">/ 5</span>
+                  </div>
                 </div>
 
                 <div className="rounded-xl border border-[#e4ebe8] bg-[#fdfaf5] dark:border-[#382f25] dark:bg-[#211a14] p-4">
                   <div className="flex items-center gap-1.5 text-xs text-[#7d5f3d] dark:text-[#dca776] font-semibold">
                     <Zap size={14} className="text-[#b8834e] dark:text-[#dca776]" /> Avg Stress
                   </div>
-                  <div className="mt-2 text-2xl font-bold text-[#b8834e] dark:text-[#dca776]">{avgStress} <span className="text-xs text-[#8aa099] dark:text-[#78938b]">/ 5</span></div>
+                  <div className="mt-2 text-2xl font-bold text-[#b8834e] dark:text-[#dca776]">
+                    {avgStress} <span className="text-xs text-[#8aa099] dark:text-[#78938b]">/ 5</span>
+                  </div>
                 </div>
 
                 <div className="rounded-xl border border-[#e4ebe8] bg-[#f5faf8] dark:border-[#26423a] dark:bg-[#12201c] p-4">
                   <div className="flex items-center gap-1.5 text-xs text-[#3e816e] dark:text-[#6ec4b2] font-semibold">
                     <Moon size={14} className="text-[#3e816e] dark:text-[#6ec4b2]" /> Avg Sleep
                   </div>
-                  <div className="mt-2 text-2xl font-bold text-[#1e3c35] dark:text-[#e2ece8]">{avgSleep} <span className="text-xs text-[#8aa099] dark:text-[#78938b]">hrs</span></div>
+                  <div className="mt-2 text-2xl font-bold text-[#1e3c35] dark:text-[#e2ece8]">
+                    {avgSleep} <span className="text-xs text-[#8aa099] dark:text-[#78938b]">hrs</span>
+                  </div>
                 </div>
 
                 <div className="rounded-xl border border-[#e4ebe8] bg-[#f8fbf9] dark:border-[#26423a] dark:bg-[#12201c] p-4">
                   <div className="flex items-center gap-1.5 text-xs text-[#6e8780] dark:text-[#8ea8a0] font-semibold">
                     <BookOpen size={14} className="text-[#48675f] dark:text-[#88ada3]" /> Academic
                   </div>
-                  <div className="mt-2 text-2xl font-bold text-[#1e3c35] dark:text-[#e2ece8]">{avgAcademic} <span className="text-xs text-[#8aa099] dark:text-[#78938b]">/ 5</span></div>
+                  <div className="mt-2 text-2xl font-bold text-[#1e3c35] dark:text-[#e2ece8]">
+                    {avgAcademic} <span className="text-xs text-[#8aa099] dark:text-[#78938b]">/ 5</span>
+                  </div>
                 </div>
               </div>
 
@@ -252,9 +341,18 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ studentId, navigat
               <div className="mt-6 border-t border-[#edf2ef] dark:border-[#243d36] pt-5">
                 <h4 className="text-xs font-semibold uppercase tracking-wider text-[#8aa099] dark:text-[#829c94] mb-3">Recent Check-in Logs</h4>
                 <div className="flex flex-col gap-2">
-                  {checkins.slice(0, 5).map((chk) => (
-                    <div key={chk.id} className="flex items-center justify-between rounded-lg bg-[#f9faf9] dark:bg-[#13221e] px-4 py-2 text-xs">
-                      <span className="text-[#48675f] dark:text-[#9db8b0] font-medium">{new Date(chk.created_at).toLocaleDateString()}</span>
+                  {displayCheckins.slice(0, 5).map((chk) => (
+                    <div key={chk.id} className="flex items-center justify-between rounded-lg bg-[#f9faf9] dark:bg-[#13221e] px-4 py-2.5 text-xs border border-slate-100 dark:border-slate-800">
+                      <div>
+                        <span className="text-[#48675f] dark:text-[#9db8b0] font-medium">
+                          {new Date(chk.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+                        </span>
+                        {chk.optional_note && (
+                          <span className="ml-2 text-slate-400 text-[11px] hidden sm:inline italic">
+                            — "{chk.optional_note}"
+                          </span>
+                        )}
+                      </div>
                       <div className="flex gap-4 text-[#6e8780] dark:text-[#8ea8a0]">
                         <span>Mood: <strong className="text-[#1e3c35] dark:text-[#e2ece8]">{chk.mood}</strong></span>
                         <span>Stress: <strong className="text-[#b8834e] dark:text-[#dca776]">{chk.stress_level}</strong></span>

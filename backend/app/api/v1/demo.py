@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from app.db.session import get_db
 from app.models.student import Student
 from app.models.signal import BehaviorSignal
+from app.models.checkin import Checkin
 from app.services.indicator_service import update_or_create_baseline, evaluate_routine_trend
 
 router = APIRouter(prefix="/demo", tags=["Demo Mode"])
@@ -75,8 +76,9 @@ def seed_demo_data(
         db.commit()
         db.refresh(student)
         
-    # Clear existing signals
+    # Clear existing signals and checkins
     db.query(BehaviorSignal).filter(BehaviorSignal.student_id == student.id).delete()
+    db.query(Checkin).filter(Checkin.student_id == student.id).delete()
     db.commit()
     
     today = datetime.now(timezone.utc).date()
@@ -108,6 +110,46 @@ def seed_demo_data(
         ))
         
     db.add_all(signals)
+
+    # 3. Seed 5 realistic check-ins for the selected scenario
+    scenario_checkins = {
+        "stable": [
+            {"mood": 4, "energy": 4, "stress": 2, "sleep": 8.0, "academic": 2, "note": "Feeling well rested after solid study session"},
+            {"mood": 4, "energy": 4, "stress": 2, "sleep": 7.5, "academic": 2, "note": "Routine feels consistent and smooth"},
+            {"mood": 5, "energy": 5, "stress": 1, "sleep": 8.0, "academic": 1, "note": "Great team lab progress today"},
+            {"mood": 4, "energy": 4, "stress": 2, "sleep": 7.5, "academic": 2, "note": "Library study session completed on time"},
+            {"mood": 4, "energy": 4, "stress": 2, "sleep": 8.0, "academic": 2, "note": "Weekend routine was restful"},
+        ],
+        "changing": [
+            {"mood": 3, "energy": 3, "stress": 4, "sleep": 5.5, "academic": 4, "note": "Late night coding lab for algorithm submission"},
+            {"mood": 3, "energy": 2, "stress": 4, "sleep": 6.0, "academic": 4, "note": "Sleep schedule shifted later than usual"},
+            {"mood": 4, "energy": 3, "stress": 3, "sleep": 6.5, "academic": 3, "note": "Managing workload but feeling slight pressure"},
+            {"mood": 4, "energy": 4, "stress": 2, "sleep": 7.0, "academic": 3, "note": "Routine mostly normal earlier in the week"},
+            {"mood": 4, "energy": 4, "stress": 2, "sleep": 7.5, "academic": 2, "note": "Good baseline routine"},
+        ],
+        "needs_attention": [
+            {"mood": 2, "energy": 2, "stress": 5, "sleep": 4.5, "academic": 5, "note": "Consecutive late nights, feeling exhausted"},
+            {"mood": 2, "energy": 1, "stress": 5, "sleep": 5.0, "academic": 5, "note": "Missed morning lecture due to disrupted sleep"},
+            {"mood": 3, "energy": 2, "stress": 4, "sleep": 5.5, "academic": 4, "note": "Struggling to keep up with assignments"},
+            {"mood": 3, "energy": 3, "stress": 4, "sleep": 6.0, "academic": 4, "note": "Feeling continuous academic strain"},
+            {"mood": 3, "energy": 3, "stress": 4, "sleep": 5.5, "academic": 4, "note": "Routine drift accumulating"},
+        ]
+    }
+    
+    checkin_list = scenario_checkins.get(state, scenario_checkins["changing"])
+    for idx, c in enumerate(checkin_list):
+        chk_time = datetime.now(timezone.utc) - timedelta(days=idx)
+        db.add(Checkin(
+            student_id=student.id,
+            mood=c["mood"],
+            energy_level=c["energy"],
+            stress_level=c["stress"],
+            sleep_hours=c["sleep"],
+            academic_pressure=c["academic"],
+            optional_note=c["note"],
+            created_at=chk_time
+        ))
+
     db.commit()
     
     # Update baseline and compute trend

@@ -32,8 +32,29 @@ const API_BASE_URL = isBrowser && !isLocalhost
 
 export const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 15000,
+  timeout: 8000,
 });
+
+// Deduplicate concurrent identical GET requests to avoid duplicate roundtrips
+const inFlightGets = new Map<string, Promise<any>>();
+
+export const fetchDeduplicated = async <T>(url: string): Promise<T> => {
+  if (inFlightGets.has(url)) {
+    return inFlightGets.get(url) as Promise<T>;
+  }
+  const promise = apiClient.get<T>(url).then(
+    (res) => {
+      inFlightGets.delete(url);
+      return res.data;
+    },
+    (err) => {
+      inFlightGets.delete(url);
+      throw err;
+    }
+  );
+  inFlightGets.set(url, promise);
+  return promise;
+};
 
 export const StudentService = {
   createStudent: async (student_identifier: string, name: string, branch?: string, year?: number): Promise<Student> => {
@@ -42,13 +63,11 @@ export const StudentService = {
   },
 
   getStudent: async (studentId: string): Promise<Student> => {
-    const res = await apiClient.get<Student>(`/students/${studentId}`);
-    return res.data;
+    return fetchDeduplicated<Student>(`/students/${studentId}`);
   },
 
   listStudents: async (): Promise<Student[]> => {
-    const res = await apiClient.get<Student[]>('/students');
-    return res.data;
+    return fetchDeduplicated<Student[]>('/students');
   },
 };
 
@@ -59,8 +78,7 @@ export const CheckinService = {
   },
 
   getCheckins: async (studentId: string): Promise<Checkin[]> => {
-    const res = await apiClient.get<Checkin[]>(`/checkins/${studentId}`);
-    return res.data;
+    return fetchDeduplicated<Checkin[]>(`/checkins/${studentId}`);
   },
 };
 
@@ -79,8 +97,7 @@ export const WellbeingService = {
 
 export const NudgeService = {
   getNudges: async (studentId: string): Promise<Nudge[]> => {
-    const res = await apiClient.get<Nudge[]>(`/nudges/${studentId}`);
-    return res.data;
+    return fetchDeduplicated<Nudge[]>(`/nudges/${studentId}`);
   },
 
   generateNudge: async (studentId: string): Promise<Nudge> => {
@@ -91,8 +108,7 @@ export const NudgeService = {
 
 export const AnalyticsService = {
   getAnalytics: async (): Promise<AnalyticsOverview> => {
-    const res = await apiClient.get<AnalyticsOverview>('/analytics/overview');
-    return res.data;
+    return fetchDeduplicated<AnalyticsOverview>('/analytics/overview');
   },
 };
 
@@ -105,14 +121,12 @@ export const AIService = {
 
 export const CounsellingService = {
   listCounsellors: async (): Promise<Counsellor[]> => {
-    const res = await apiClient.get<Counsellor[]>('/counsellors');
-    return res.data;
+    return fetchDeduplicated<Counsellor[]>('/counsellors');
   },
 
   getAvailability: async (counsellorId: string, date?: string): Promise<AvailabilitySlot[]> => {
     const query = date ? `?date=${encodeURIComponent(date)}` : '';
-    const res = await apiClient.get<AvailabilitySlot[]>(`/counsellors/${counsellorId}/availability${query}`);
-    return res.data;
+    return fetchDeduplicated<AvailabilitySlot[]>(`/counsellors/${counsellorId}/availability${query}`);
   },
 
   bookAppointment: async (
@@ -131,8 +145,7 @@ export const CounsellingService = {
   },
 
   getStudentAppointments: async (studentId: string): Promise<Appointment[]> => {
-    const res = await apiClient.get<Appointment[]>(`/appointments?student_id=${studentId}`);
-    return res.data;
+    return fetchDeduplicated<Appointment[]>(`/appointments?student_id=${studentId}`);
   },
 
   rescheduleAppointment: async (appointmentId: string, newAvailabilityId: string): Promise<Appointment> => {
