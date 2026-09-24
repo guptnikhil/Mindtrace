@@ -38,17 +38,36 @@ const VALID_VIEWS: View[] = [
   'institution_dashboard',
 ];
 
+const ONBOARDING_COMPLETED_KEY = 'mindtrace_onboarding_completed';
+
+export const isUserOnboarded = (): boolean => {
+  if (typeof window === 'undefined') return false;
+  return localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true';
+};
+
 const getInitialView = (): View => {
   if (typeof window !== 'undefined') {
     const hash = window.location.hash.replace('#', '') as View;
+    // 1. If an explicit valid hash is in URL (e.g. #dashboard, #resources, #checkin, #institution_login),
+    // honor it directly so direct links, bookmarks, evaluator testing and tabs work.
     if (hash && VALID_VIEWS.includes(hash)) {
       return hash;
     }
-    const saved = localStorage.getItem('mindtrace_current_view') as View;
-    if (saved && VALID_VIEWS.includes(saved)) {
-      return saved;
+
+    // 2. If opening at root path "/" (no hash):
+    // Check if this visitor has genuinely completed onboarding on this device.
+    const hasOnboarded = localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true';
+    if (hasOnboarded) {
+      // Returning user who has completed onboarding:
+      const saved = localStorage.getItem('mindtrace_current_view') as View;
+      if (saved && VALID_VIEWS.includes(saved) && saved !== 'welcome' && saved !== 'consent' && saved !== 'onboarding') {
+        return saved;
+      }
+      return 'dashboard';
     }
   }
+
+  // 3. First-time visitor opening root "/" -> Always show Landing/Welcome page
   return 'welcome';
 };
 
@@ -56,6 +75,9 @@ export function App() {
   const [view, setView] = useState<View>(getInitialView);
   const [currentStudent, setCurrentStudent] = useState<Student | null>(() => {
     try {
+      const hasOnboarded = localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true';
+      if (!hasOnboarded) return null;
+
       const cached = localStorage.getItem('mindtrace_student_profile');
       if (cached) return JSON.parse(cached);
       const savedId = localStorage.getItem('wellbeing_student_id');
@@ -99,10 +121,11 @@ export function App() {
     return () => window.removeEventListener('hashchange', handleHashChange);
   }, [view]);
 
-  // Background fetch student on app load (without blocking initial render)
+  // Background fetch student on app load if genuine student session exists
   useEffect(() => {
     const savedStudentId = localStorage.getItem('wellbeing_student_id');
-    if (savedStudentId) {
+    const hasOnboarded = localStorage.getItem(ONBOARDING_COMPLETED_KEY) === 'true';
+    if (savedStudentId && hasOnboarded) {
       StudentService.getStudent(savedStudentId)
         .then((stu) => {
           if (stu) {
@@ -113,17 +136,6 @@ export function App() {
         .catch(() => {
           // Keep existing cached student profile if backend has transient issue
         });
-    } else {
-      // Auto-fetch default demo student if available
-      StudentService.listStudents()
-        .then((students) => {
-          if (students && students.length > 0) {
-            setCurrentStudent(students[0]);
-            localStorage.setItem('wellbeing_student_id', students[0].id);
-            localStorage.setItem('mindtrace_student_profile', JSON.stringify(students[0]));
-          }
-        })
-        .catch((err) => console.log('No backend students found yet:', err));
     }
   }, []);
 
@@ -131,6 +143,7 @@ export function App() {
     setCurrentStudent(student);
     localStorage.setItem('wellbeing_student_id', student.id);
     localStorage.setItem('mindtrace_student_profile', JSON.stringify(student));
+    localStorage.setItem(ONBOARDING_COMPLETED_KEY, 'true');
     navigateTo('checkin');
   };
 
@@ -140,10 +153,10 @@ export function App() {
     <AppLayout currentView={view} navigate={navigateTo}>
       {view === 'welcome' && (
         <WelcomePage 
-          onStart={() => currentStudent ? navigateTo('dashboard') : navigateTo('consent')} 
+          onStart={() => isUserOnboarded() ? navigateTo('dashboard') : navigateTo('consent')} 
           onPrivacy={() => navigateTo('consent')}
           onGoToDashboard={() => navigateTo('dashboard')}
-          hasStudentProfile={Boolean(currentStudent)}
+          hasStudentProfile={isUserOnboarded()}
         />
       )}
       {view === 'consent' && (

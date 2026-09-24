@@ -39,6 +39,10 @@ export const SettingsPage: React.FC<SettingsPageProps> = ({ navigate }) => {
     if (window.confirm('Reset local session? This will clear your on-device student profile and return to the welcome page.')) {
       localStorage.removeItem('wellbeing_student_id');
       localStorage.removeItem('wellbeing_consent');
+      localStorage.removeItem('mindtrace_onboarding_completed');
+      localStorage.removeItem('mindtrace_student_profile');
+      localStorage.removeItem('mindtrace_current_view');
+      localStorage.removeItem('wellbeing_quest_data');
       navigate('welcome');
     }
   };
