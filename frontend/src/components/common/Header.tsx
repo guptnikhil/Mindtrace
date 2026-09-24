@@ -46,10 +46,6 @@ export const Header: React.FC<HeaderProps> = ({ currentView, navigate }) => {
         </nav>
 
         <div className="flex items-center gap-3">
-          <span className="hidden items-center gap-1.5 rounded-full border border-[#e2ebe7] bg-white px-3 py-1.5 text-[11px] font-medium text-[#79908a] dark:border-[#26423a] dark:bg-[#182824] dark:text-[#9eb4ad] lg:flex">
-            <span className="size-1.5 rounded-full bg-[#77a995]" />
-            FastAPI + SQLite DB
-          </span>
 
           {/* Theme Toggle Button */}
           <button

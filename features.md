@@ -266,9 +266,18 @@ MindTrace was engineered around a core tenet: **Engineering students resist clin
 ### 3.15 Settings & Student Data Governance
 * **Location**: [`frontend/src/pages/SettingsPage.tsx`](file:///Users/nikhilgupt/Downloads/wellbeing-companion-prototype/frontend/src/pages/SettingsPage.tsx)
 * **Features**:
-  * **Notification & Nudge Cadence**: Customize daily nudge delivery preferences (morning, evening, or silent).
-  * **Data Export**: Allows students to view or export their logged check-in history.
-  * **Clear Local Data & Session Reset**: Single-click button to flush cached student tokens and reset local storage.
+  * **Meaningful Student Privacy Guarantees**:
+    * Zero surveillance, background tracking, webcam, or keystroke recording.
+    * Strict institutional anonymity (10+ student cohort aggregation boundary).
+    * Student-controlled voluntary support (no automated emails, disciplinary flags, or alerts to parents/faculty).
+    * Private on-device reflection and check-in notes.
+  * **Experience Preferences**:
+    * Companion conversation tone selector (`Gentle & Reflective`, `Balanced`, `Pragmatic & Brief`).
+    * Micro-nudge notification cadence (`Only on Routine Shift`, `Daily Gentle Prompt`, `Quiet Mode`).
+    * Check-in reminder scheduling (`Evening Wind-down`, `Morning Planning`, `Manual`).
+  * **Account & Data Governance**:
+    * Fast navigation to Consent Permissions, Support Resources, and Institutional Portal.
+    * One-click **Reset Local Profile** button to safely clear local student session and tokens.
 
 ---
 

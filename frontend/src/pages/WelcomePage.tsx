@@ -185,7 +185,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({
 
             <div className="mt-5 flex items-center justify-between text-xs text-[#a0b1ac] dark:text-[#6a837c]">
               <span className="flex items-center gap-1.5"><LockKeyhole size={12} /> Only you can see this</span>
-              <span>FastAPI + SQLite Active</span>
+              <span>Student-Owned &bull; Private</span>
             </div>
           </div>
         </div>
