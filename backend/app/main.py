@@ -39,20 +39,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Root / health endpoint under /api/health
+# Root / health endpoints
 app.include_router(health.router, prefix="/api")
+app.include_router(health.router, prefix="/api/v1")
 
-# Include feature routers under /api
-app.include_router(students.router, prefix="/api")
-app.include_router(checkins.router, prefix="/api")
-app.include_router(wellbeing.router, prefix="/api")
-app.include_router(nudges.router, prefix="/api")
-app.include_router(analytics.router, prefix="/api")
-app.include_router(ai.router, prefix="/api")
-app.include_router(counselling.router, prefix="/api")
-app.include_router(chat.router, prefix="/api")
-app.include_router(demo.router, prefix="/api")
-app.include_router(institution.router, prefix="/api/institution")
+# Include feature routers under both /api and /api/v1 for 100% interoperability
+for pfx in ["/api", "/api/v1"]:
+    app.include_router(students.router, prefix=pfx)
+    app.include_router(checkins.router, prefix=pfx)
+    app.include_router(wellbeing.router, prefix=pfx)
+    app.include_router(nudges.router, prefix=pfx)
+    app.include_router(analytics.router, prefix=pfx)
+    app.include_router(ai.router, prefix=pfx)
+    app.include_router(counselling.router, prefix=pfx)
+    app.include_router(chat.router, prefix=pfx)
+    app.include_router(demo.router, prefix=pfx)
+    app.include_router(institution.router, prefix=f"{pfx}/institution")
 
 @app.get("/")
 def root():

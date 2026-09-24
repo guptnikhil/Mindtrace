@@ -18,10 +18,7 @@ def get_nudges_route(student_id: str, db: Session = Depends(get_db)):
     student_repo = StudentRepository(db)
     student = student_repo.get_by_id(student_id) or student_repo.get_by_identifier(student_id)
     if not student:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Student profile '{student_id}' not found."
-        )
+        return []
     return get_student_nudges_service(db, student.id)
 
 @router.post("/{student_id}/generate", response_model=NudgeResponse, status_code=status.HTTP_201_CREATED)

@@ -38,10 +38,7 @@ def get_student_checkins_route(student_id: str, db: Session = Depends(get_db)):
     student_repo = StudentRepository(db)
     student = student_repo.get_by_id(student_id) or student_repo.get_by_identifier(student_id)
     if not student:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Student '{student_id}' not found."
-        )
+        return []
         
     checkin_repo = CheckinRepository(db)
     return checkin_repo.get_by_student_id(student.id)

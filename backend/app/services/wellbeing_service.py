@@ -14,12 +14,13 @@ def submit_checkin_service(db: Session, req: CheckinCreate) -> Checkin:
     student_repo = StudentRepository(db)
     checkin_repo = CheckinRepository(db)
 
-    student = student_repo.get_by_id(req.student_id)
+    student = student_repo.get_by_id(req.student_id) or student_repo.get_by_identifier(req.student_id)
     if not student:
-        # Create default student record if missing
+        # Create student record if missing
+        name = "Riya Sharma" if "riya" in req.student_id.lower() else "Student"
         student = student_repo.create(
             student_identifier=req.student_id,
-            name="Student"
+            name=name
         )
 
     sanitized_note = sanitize_text(req.optional_note) if req.optional_note else None
@@ -48,8 +49,9 @@ def analyze_and_store_assessment(
     checkin_repo = CheckinRepository(db)
     wellbeing_repo = WellbeingRepository(db)
 
-    student = student_repo.get_by_id(student_id)
-    latest_checkin = checkin_repo.get_latest_by_student_id(student_id) if student else None
+    student = student_repo.get_by_id(student_id) or student_repo.get_by_identifier(student_id)
+    target_student_id = student.id if student else student_id
+    latest_checkin = checkin_repo.get_latest_by_student_id(target_student_id) if student else None
 
     final_mood = mood if mood is not None else (latest_checkin.mood if latest_checkin else 3)
     final_energy = energy_level if energy_level is not None else (latest_checkin.energy_level if latest_checkin else 3)

@@ -8,8 +8,8 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      '/api/v1': {
-        target: 'http://127.0.0.1:8001',
+      '/api': {
+        target: 'http://127.0.0.1:8000',
         changeOrigin: true,
       },
     },
