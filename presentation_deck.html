@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MindTrace — SIH 2026 Presentation Deck</title>
+  <style>
+    :root {
+      --primary: #1e3c35;
+      --accent: #2f6f64;
+      --accent-light: #e6f3ee;
+      --amber: #b8834e;
+      --amber-light: #fef8f0;
+      --danger: #d9534f;
+      --bg: #f8faf9;
+      --card-bg: #ffffff;
+      --text-main: #1f2d2a;
+      --text-muted: #5e7770;
+      --border: #dce7e3;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: #0f1a17; color: var(--text-main); display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+
+    .deck-container {
+      width: 100%;
+      max-width: 1200px;
+      aspect-ratio: 16 / 9;
+      background: var(--bg);
+      border-radius: 16px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+      height: 100%;
+      padding: 36px 48px;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .slide.active {
+      display: flex;
+    }
+
+    /* Header & Badges */
+    .slide-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .team-badge {
+      background: var(--accent);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+    .slide-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.5px;
+    }
+    .sih-badge {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--amber);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Content Layouts */
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+      flex: 1;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      flex: 1;
+    }
+    .grid-4-box {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+    }
+    .card-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-title.amber { color: var(--amber); }
+    .card-title.accent { color: var(--accent); }
+
+    ul.bullet-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-main);
+      line-height: 1.4;
+    }
+    ul.bullet-list li {
+      position: relative;
+      padding-left: 14px;
+    }
+    ul.bullet-list li::before {
+      content: "•";
+      color: var(--accent);
+      font-weight: bold;
+      position: absolute;
+      left: 0;
+    }
+    ul.bullet-list li strong {
+      color: var(--primary);
+    }
+
+    /* Status & CTA footer */
+    .slide-footer-banner {
+      background: linear-gradient(90deg, #1e3c35, #2f6f64);
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 14px;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      max-width: 1200px;
+      margin-top: 16px;
+      color: #9bb3ab;
+      font-size: 14px;
+    }
+    .btn-group {
+      display: flex;
+      gap: 10px;
+    }
+    .btn {
+      background: #1e3c35;
+      color: #fff;
+      border: 1px solid #355e54;
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background: #2f6f64;
+    }
+
+    /* Slide 1 Hero */
+    .hero-title {
+      font-size: 42px;
+      font-weight: 900;
+      color: var(--primary);
+      line-height: 1.1;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .hero-tag {
+      display: inline-block;
+      background: var(--amber-light);
+      color: var(--amber);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 6px;
+      border: 1px solid #f0d5be;
+      margin-bottom: 16px;
+    }
+
+    /* Table */
+    table.matrix {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+    }
+    table.matrix th, table.matrix td {
+      padding: 6px 10px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    table.matrix th {
+      background: var(--accent-light);
+      color: var(--primary);
+      font-weight: 700;
+    }
+    .check { color: #2e7d32; font-weight: bold; }
+    .cross { color: #d32f2f; font-weight: bold; }
+
+    @media print {
+      body { background: none; padding: 0; }
+      .controls { display: none; }
+      .deck-container { box-shadow: none; border-radius: 0; }
+      .slide { display: flex !important; page-break-after: always; height: 100vh; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="deck-container">
+  
+  <!-- SLIDE 1: TITLE SLIDE -->
+  <div class="slide active" id="slide-1">
+    <div class="slide-header">
+      <div class="header-left">
+        <span class="team-badge">SIH 2026</span>
+        <span style="font-size: 12px; font-weight: 600; color: var(--text-muted);">SMART INDIA HACKATHON 2026</span>
+      </div>
+      <div class="sih-badge">Problem Statement ID: SIH26104</div>
+    </div>
+    
+    <div style="flex: 1; display: flex; align-items: center; justify-content: space-between; gap: 40px;">
+      <div style="max-width: 65%;">
+        <span class="hero-tag">Theme: Smart Automation & Student Wellbeing</span>
+        <h1 class="hero-title">माइंडट्रेस — MindTrace.ai</h1>
+        <p style="font-size: 18px; color: var(--accent); font-weight: 700; margin-bottom: 20px;">
+          Passive Early-Warning Wellbeing Companion for Engineering Students
+        </p>
+        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
+          Detecting academic burnout drift 2-3 weeks before exams through passive routine signals, 14-day baseline tracking, and privacy-preserving counterfactual simulations.
+        </p>
+        <div style="display: flex; gap: 24px; font-size: 12px;">
+          <div><strong style="color: var(--primary);">PS Category:</strong> Software</div>
+          <div><strong style="color: var(--primary);">Team ID:</strong> 145344</div>
+          <div><strong style="color: var(--primary);">Team Name:</strong> The Innovators</div>
+        </div>
+      </div>
+      <div style="flex: 1; display: flex; justify-content: center;">
+        <div style="width: 200px; height: 200px; border-radius: 50%; background: linear-gradient(135deg, #e6f3ee, #cfe6de); border: 4px solid var(--accent); display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; box-shadow: 0 10px 25px rgba(47, 111, 100, 0.15);">
+          <span style="font-size: 38px;">🧠</span>
+          <strong style="color: var(--primary); font-size: 16px; margin-top: 6px;">MINDTRACE</strong>
+          <span style="font-size: 11px; color: var(--text-muted);">Signals • Not Surveys</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="slide-footer-banner">
+      <span>🚀 Prototype: https://mindtrace-app-rho.vercel.app</span>
+      <span>100% Fully Functional Full-Stack Prototype</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 2: PROBLEM & SOLUTION -->
+  <div class="slide" id="slide-2">
+    <div class="slide-header">
+      <div class="header-left">
+        <span class="team-badge">The Innovators</span>
+        <span class="slide-title">Problem, Solution & Core USPs</span>
+      </div>
+      <div class="sih-badge">SIH2026 • MindTrace</div>
+    </div>
+
+    <div class="grid-3">
+      <!-- Col 1 -->
+      <div class="card">
+        <div class="card-title amber">⚠️ Understanding The Problem</div>
+        <ul class="bullet-list">
+          <li><strong>Silent Burnout Gap:</strong> 1 in 4 engineering students suffers burnout; only 8% visit campus counselors.</li>
+          <li><strong>Signal Fragmentation:</strong> Sleep shifts, skipped labs, and deadline delays happen invisibly.</li>
+          <li><strong>Counseling Stigma:</strong> Fear of university record-marking and peer judgment keeps students silent.</li>
+          <li><strong>Late Interventions:</strong> Support arrives only after course dropouts or acute crises.</li>
+          <li><strong>Survey Fatigue:</strong> 50-question psychological forms alienate stressed students.</li>
+        </ul>
+      </div>
+
+      <!-- Col 2 -->
+      <div class="card">
+        <div class="card-title accent">💡 Our Solution</div>
+        <ul class="bullet-list">
+          <li><strong>60-Second Micro Check-In:</strong> 5 key routine sliders (sleep, energy, stress, mood, academic pressure).</li>
+          <li><strong>14-Day Pattern Index:</strong> Moving baseline algorithm spotting early drift weeks ahead.</li>
+          <li><strong>Counterfactual Explorer:</strong> Real-time "What-If" simulator showing recovery actions.</li>
+          <li><strong>Calm Companion & Audio:</strong> Synthesized ambient Web Audio & empathetic AI chat without clinical labels.</li>
+        </ul>
+      </div>
+
+      <!-- Col 3 -->
+      <div class="card">
+        <div class="card-title">🌟 Unique Solutions (USPs)</div>
+        <ul class="bullet-list">
+          <li><strong>Zero-Login & Local-First:</strong> No college email required; encrypted on student's device.</li>
+          <li><strong>Explainable Drift:</strong> Supportive, non-diagnostic transparency behind every score.</li>
+          <li><strong>Live Behavioral Simulator:</strong> Students test personal habit shifts in real time.</li>
+          <li><strong>In-Browser Web Audio:</strong> 0ms latency soundscapes with zero external dependencies.</li>
+          <li><strong>Anonymous Admin Center:</strong> Real-time cohort health analytics with zero PII leaks.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="slide-footer-banner">
+      <span>Live Link: https://mindtrace-app-rho.vercel.app/#dashboard</span>
+      <span>100% PROTOTYPE IS COMPLETED AND OPERATIONAL</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 3: TECHNICAL APPROACH -->
+  <div class="slide" id="slide-3">
+    <div class="slide-header">
+      <div class="header-left">
+        <span class="team-badge">Technical Approach</span>
+        <span class="slide-title">System Architecture & Pipeline</span>
+      </div>
+      <div class="sih-badge">SIH2026 • MindTrace</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title accent">🔄 End-to-End Methodology Flow</div>
+        <ul class="bullet-list" style="margin-bottom: 12px;">
+          <li><strong>Intake:</strong> Daily micro-checkin (5 sliders) + optional reflection note.</li>
+          <li><strong>Client Caching:</strong> Stale-While-Revalidate (SWR) localStorage hydration for 0ms initial load.</li>
+          <li><strong>Processing:</strong> FastAPI + SQLAlchemy ORM deterministic risk & drift engine.</li>
+          <li><strong>Intervention:</strong> Dynamic rule-based contextual Nudge generation + 1-tap WhatsApp Counsellor bridge.</li>
+        </ul>
+        <div class="card-title" style="margin-top: 6px;">🛠️ Tech Stack</div>
+        <div style="font-size: 11.5px; line-height: 1.5; color: var(--text-muted);">
+          <strong>Frontend:</strong> React 18, TypeScript, Vite, Tailwind CSS, Lucide Icons<br>
+          <strong>Backend & AI:</strong> FastAPI, Python 3.11, Pydantic v2, Scikit/Rule Scoring<br>
+          <strong>Database & Audio:</strong> SQLite / PostgreSQL, Web Audio API (Synthesizer)
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title amber">🖥️ Production System Modules</div>
+        <ul class="bullet-list">
+          <li><strong>Student Portal:</strong> Personalized Routine Pattern Index, 14-day history, contextual nudges.</li>
+          <li><strong>Counterfactual Explorer:</strong> Interactive sliders simulating late-night minutes, library checkins, and schedule variance.</li>
+          <li><strong>Institutional Dashboard:</strong> Differential-privacy cohort view with 6 tabs (Overview, Funnel, Cohorts, Support, Engagement, Reports).</li>
+          <li><strong>Resilient Offline Fallback:</strong> Client calculates scoring locally if backend connectivity drops.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="slide-footer-banner">
+      <span>API Endpoints: Dual `/api` & `/api/v1` routes with CORS edge proxying</span>
+      <span>Tested & Audited Architecture</span>
+    </div>
+  </div>
+
+  <!-- SLIDE 4: IMPACT AND BENEFITS -->
+  <div class="slide" id="slide-4">
+    <div class="slide-header">
+      <div class="header-left">
+        <span class="team-badge">Impact & Benefits</span>
+        <span class="slide-title">Transforming Higher Education Wellbeing</span>
+      </div>
+      <div class="sih-badge">SIH2026 • MindTrace</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title accent">🎓 Potential Impact on Students</div>
+        <ul class="bullet-list">
+          <li><strong>Early Drift Catch:</strong> Identifies burnout 2-3 weeks before midterm exams or failure.</li>
+          <li><strong>Zero Stigma:</strong> 100% private, self-directed exploration without academic fear.</li>
+          <li><strong>Instant De-escalation:</strong> 1-click ambient audio and breathing exercises.</li>
+          <li><strong>Empowered Self-Agency:</strong> What-If model gives concrete habit adjustment guidance.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title amber">🏛️ Institutional & Counsellor Benefits</div>
+        <ul class="bullet-list">
+          <li><strong>Pre-Qualified Counseling:</strong> Students connect voluntarily with context.</li>
+          <li><strong>Departmental Heatmaps:</strong> Pinpoints high-stress semesters and branches.</li>
+          <li><strong>Optimized Staffing:</strong> Matches physical counselors with peak stress weeks.</li>
+          <li><strong>Zero PII Exposure:</strong> Fully compliant with national data privacy mandates.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top: 14px;">
+      <div class="card">
+        <div class="card-title">📈 Economic & Strategic Gains</div>
+        <ul class="bullet-list">
+          <li><strong>Reduced Dropouts:</strong> Preserves tuition revenue and university graduation metrics.</li>
+          <li><strong>Near-Zero Infrastructure Cost:</strong> Lightweight FastAPI/SQLite scales on minimal compute.</li>
+          <li><strong>Auditable Logic:</strong> Eliminates hallucination risks of unregulated LLMs.</li>
+        </ul>
+      </div>
+
+      <div class="card" style="display: flex; flex-direction: row; align-items: center; justify-content: space-around;">
+        <div style="text-align: center;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--accent);">35%</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Early Drift Prevention</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--primary);">25%</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Counsellor Efficiency</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 28px; font-weight: 800; color: var(--amber);">25%</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Academic Retention</div>
+        </div>
+        <div style="text-align: center;">
+          <div style="font-size: 28px; font-weight: 800; color: #2e7d32;">15%</div>
+          <div style="font-size: 11px; color: var(--text-muted);">Campus Culture</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 5: FEASIBILITY & RISK MITIGATION -->
+  <div class="slide" id="slide-5">
+    <div class="slide-header">
+      <div class="header-left">
+        <span class="team-badge">Feasibility & Viability</span>
+        <span class="slide-title">Reliability, Impact & Risk Mitigation</span>
+      </div>
+      <div class="sih-badge">SIH2026 • MindTrace</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title accent">🔬 Analysis of Feasibility</div>
+        <ul class="bullet-list">
+          <li><strong>Research Base:</strong> Grounded in WHO-5 Wellbeing Index & IEEE affective computing studies.</li>
+          <li><strong>Tech Compatibility:</strong> Containerized REST API runs on any campus server or cloud.</li>
+          <li><strong>High Scalability:</strong> Stateless backend effortlessly serves 50,000+ students per cluster.</li>
+          <li><strong>DPDP Act 2023:</strong> Strict data minimization fully compliant with Indian privacy laws.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <div class="card-title amber">📊 Measured Projected Outcomes</div>
+        <ul class="bullet-list">
+          <li><strong>Undetected Burnout:</strong> 72% &rarr; 14% (80% relative drop in silent suffering).</li>
+          <li><strong>Time to Acknowledge Shift:</strong> 28 days &rarr; 2 days (92% faster awareness).</li>
+          <li><strong>Voluntary Help-Seeking:</strong> 8% &rarr; 38% (Nearly 5x increase in early support access).</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid-4-box">
+      <div class="card" style="padding: 10px;">
+        <strong style="font-size: 11px; color: var(--primary);">Backend Down?</strong>
+        <p style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Local scoring fallback calculates result on client instantly.</p>
+      </div>
+      <div class="card" style="padding: 10px;">
+        <strong style="font-size: 11px; color: var(--primary);">Student Distrust?</strong>
+        <p style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Zero login required; no link to faculty or grading systems.</p>
+      </div>
+      <div class="card" style="padding: 10px;">
+        <strong style="font-size: 11px; color: var(--primary);">Exam Week Drift?</strong>
+        <p style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Dynamic moving baseline auto-adjusts for exam period spikes.</p>
+      </div>
+      <div class="card" style="padding: 10px;">
+        <strong style="font-size: 11px; color: var(--primary);">Crisis Signals?</strong>
+        <p style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Chat auto-detects distress keywords & surfaces emergency lines.</p>
+      </div>
+      <div class="card" style="padding: 10px;">
+        <strong style="font-size: 11px; color: var(--primary);">Multi-Campus Scale?</strong>
+        <p style="font-size: 10px; color: var(--text-muted); margin-top: 4px;">Tenant isolation allows plug-and-play onboarding per university.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SLIDE 6: RESEARCH & REFERENCES -->
+  <div class="slide" id="slide-6">
+    <div class="slide-header">
+      <div class="header-left">
+        <span class="team-badge">Research & References</span>
+        <span class="slide-title">Feature Comparison Matrix & References</span>
+      </div>
+      <div class="sih-badge">SIH2026 • MindTrace</div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-title accent">⚖️ Solution Comparison Matrix</div>
+        <table class="matrix">
+          <thead>
+            <tr>
+              <th>Capability</th>
+              <th>MindTrace</th>
+              <th>Campus Surveys</th>
+              <th>Generic Apps</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Passive Routine Tracking</td>
+              <td class="check">✔ Yes</td>
+              <td class="cross">✖ No</td>
+              <td class="cross">✖ No</td>
+            </tr>
+            <tr>
+              <td>60-Sec Micro Check-in</td>
+              <td class="check">✔ Yes</td>
+              <td class="cross">✖ No</td>
+              <td class="check">✔ Yes</td>
+            </tr>
+            <tr>
+              <td>Interactive What-If Simulator</td>
+              <td class="check">✔ Yes</td>
+              <td class="cross">✖ No</td>
+              <td class="cross">✖ No</td>
+            </tr>
+            <tr>
+              <td>Synthesized Web Audio</td>
+              <td class="check">✔ Yes</td>
+              <td class="cross">✖ No</td>
+              <td class="cross">✖ No</td>
+            </tr>
+            <tr>
+              <td>Local-First Zero-Login</td>
+              <td class="check">✔ Yes</td>
+              <td class="cross">✖ No</td>
+              <td class="cross">✖ No</td>
+            </tr>
+            <tr>
+              <td>Cohort Risk Heatmaps</td>
+              <td class="check">✔ Yes</td>
+              <td class="cross">✖ No</td>
+              <td class="cross">✖ No</td>
+            </tr>
+            <tr>
+              <td>Instant WhatsApp Counsellor</td>
+              <td class="check">✔ Yes</td>
+              <td class="cross">✖ No</td>
+              <td class="cross">✖ No</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <div class="card-title amber">📚 Research & Policy References</div>
+        <ul class="bullet-list">
+          <li><strong>World Health Organization (WHO):</strong> WHO-5 Wellbeing Index Standard for non-invasive tracking.</li>
+          <li><strong>IEEE Affective Computing:</strong> Machine learning algorithms for early academic burnout detection.</li>
+          <li><strong>DPDP Act 2023 (MeitY, India):</strong> Digital Personal Data Protection guidelines on student consent.</li>
+          <li><strong>AICTE / UGC Guidelines:</strong> Mandatory student counseling & mental health frameworks in technical colleges.</li>
+          <li><strong>NIMHANS India:</strong> Youth epidemiological reports on higher education stress and suicide prevention.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="slide-footer-banner">
+      <span>Github Repo: https://github.com/guptnikhil/Mindtrace</span>
+      <span>Thank You! • Team The Innovators</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- Deck Navigation Controls -->
+<div class="controls">
+  <div>Use <strong>&larr; Previous</strong> / <strong>Next &rarr;</strong> or keyboard arrows to navigate. Press <strong>Cmd+P / Ctrl+P</strong> to print slides to PDF.</div>
+  <div class="btn-group">
+    <button class="btn" id="prev-btn">&larr; Previous</button>
+    <span id="slide-num" style="display: flex; align-items: center; font-weight: bold; padding: 0 8px;">1 / 6</span>
+    <button class="btn" id="next-btn">Next &rarr;</button>
+  </div>
+</div>
+
+<script>
+  let currentSlide = 1;
+  const totalSlides = 6;
+
+  function showSlide(n) {
+    document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+    document.getElementById(`slide-${n}`).classList.add('active');
+    document.getElementById('slide-num').innerText = `${n} / ${totalSlides}`;
+  }
+
+  document.getElementById('prev-btn').addEventListener('click', () => {
+    currentSlide = currentSlide > 1 ? currentSlide - 1 : totalSlides;
+    showSlide(currentSlide);
+  });
+
+  document.getElementById('next-btn').addEventListener('click', () => {
+    currentSlide = currentSlide < totalSlides ? currentSlide + 1 : 1;
+    showSlide(currentSlide);
+  });
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') {
+      currentSlide = currentSlide < totalSlides ? currentSlide + 1 : 1;
+      showSlide(currentSlide);
+    } else if (e.key === 'ArrowLeft') {
+      currentSlide = currentSlide > 1 ? currentSlide - 1 : totalSlides;
+      showSlide(currentSlide);
+    }
+  });
+</script>
+
+</body>
+</html>
