@@ -25,7 +25,7 @@ export const Header: React.FC<HeaderProps> = ({ currentView, navigate }) => {
   return (
     <header className="sticky top-0 z-30 border-b border-[#e8eeeb] bg-[#fafaf8]/90 backdrop-blur-md dark:border-[#203630] dark:bg-[#121e1b]/90">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 sm:px-8 lg:px-10">
-        <button onClick={() => navigate('dashboard')} className="text-left cursor-pointer" aria-label="Go to dashboard">
+        <button onClick={() => navigate('welcome')} className="text-left cursor-pointer" aria-label="Open first page" title="Open first page">
           <Brand />
         </button>
 

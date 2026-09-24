@@ -119,7 +119,9 @@ export const OnboardingPage: React.FC<OnboardingPageProps> = ({ onComplete, onBa
     <div className="min-h-screen bg-[#fafaf8] dark:bg-[#121e1b] text-[#1f2d2a] dark:text-[#e2ece8] transition-colors duration-200">
       {/* Top Navigation */}
       <header className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5 sm:px-8">
-        <Brand />
+        <button onClick={onBack} className="text-left cursor-pointer" aria-label="Return to previous page">
+          <Brand />
+        </button>
         <div className="flex items-center gap-3">
           {step > 0 && step < 6 && (
             <button
