@@ -1,5 +1,5 @@
 import React from 'react';
-import { LockKeyhole, Sparkles, ArrowRight, ShieldCheck, Activity, HeartHandshake, Moon, Sun, Leaf, LayoutDashboard } from 'lucide-react';
+import { LockKeyhole, Sparkles, ArrowRight, ShieldCheck, Activity, HeartHandshake, Moon, Sun, Leaf } from 'lucide-react';
 import { Brand } from '../components/common/Brand';
 import { useTheme } from '../context/ThemeContext';
 
@@ -13,8 +13,6 @@ interface WelcomePageProps {
 export const WelcomePage: React.FC<WelcomePageProps> = ({
   onStart,
   onPrivacy,
-  onGoToDashboard,
-  hasStudentProfile = false,
 }) => {
   const { theme, toggleTheme } = useTheme();
 
@@ -29,19 +27,9 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({
         <Brand />
 
         <div className="flex items-center gap-3">
-          {hasStudentProfile && onGoToDashboard && (
-            <button
-              onClick={onGoToDashboard}
-              className="hidden items-center gap-1.5 rounded-xl border border-[#d6e3de] bg-white/80 px-3.5 py-1.5 text-xs font-semibold text-[#2f6f64] shadow-xs backdrop-blur-xs transition-all hover:bg-white hover:text-[#23584f] dark:border-[#223932] dark:bg-[#13221e]/80 dark:text-[#6ec4b2] dark:hover:bg-[#182b26] sm:flex"
-            >
-              <LayoutDashboard size={14} />
-              <span>Go to Dashboard</span>
-            </button>
-          )}
-
           <button
             onClick={onPrivacy}
-            className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#55716b] transition-colors hover:text-[#2f6f64] dark:text-[#8ea8a1] dark:hover:text-[#6ec4b2]"
+            className="flex items-center gap-1.5 text-xs sm:text-sm font-medium text-[#55716b] transition-colors hover:text-[#2f6f64] dark:text-[#8ea8a1] dark:hover:text-[#6ec4b2] cursor-pointer"
           >
             <LockKeyhole size={14} />
             <span className="hidden sm:inline">How privacy works</span>
@@ -77,41 +65,23 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({
           </h1>
 
           <p className="mt-6 max-w-lg text-base leading-7 text-[#627a74] dark:text-[#94aca6] sm:text-lg">
-            An early-warning wellbeing support companion that identifies shifts in student routine patterns and provides private, supportive guidance.
+            An early-warning wellbeing support system that identifies changes in student routine patterns and provides appropriate, gentle nudges.
           </p>
 
+          {/* Action Buttons - Only Get started & See privacy design */}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            {hasStudentProfile && onGoToDashboard ? (
-              <>
-                <button
-                  onClick={onGoToDashboard}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2f6f64] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(47,111,100,0.25)] transition-all hover:-translate-y-0.5 hover:bg-[#245e54] dark:bg-[#3ca08d] dark:hover:bg-[#4ab4a0] dark:shadow-[0_8px_24px_rgba(60,160,141,0.25)] cursor-pointer"
-                >
-                  Go to Dashboard <ArrowRight size={17} />
-                </button>
-                <button
-                  onClick={onStart}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#d8e2de] bg-white/70 px-5 py-3.5 text-sm font-semibold text-[#41635c] transition-all hover:border-[#a9c5bc] hover:bg-white dark:border-[#243d36] dark:bg-[#142320]/80 dark:text-[#afd1c8] dark:hover:bg-[#1a2d28] cursor-pointer"
-                >
-                  <Activity size={17} /> Start New Check-in
-                </button>
-              </>
-            ) : (
-              <>
-                <button
-                  onClick={onStart}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#2f6f64] px-5 py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(47,111,100,0.25)] transition-all hover:-translate-y-0.5 hover:bg-[#245e54] dark:bg-[#3ca08d] dark:hover:bg-[#4ab4a0] dark:shadow-[0_8px_24px_rgba(60,160,141,0.25)] cursor-pointer"
-                >
-                  Get started <ArrowRight size={17} />
-                </button>
-                <button
-                  onClick={onPrivacy}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#d8e2de] bg-white/70 px-5 py-3.5 text-sm font-semibold text-[#41635c] transition-all hover:border-[#a9c5bc] hover:bg-white dark:border-[#243d36] dark:bg-[#142320]/80 dark:text-[#afd1c8] dark:hover:bg-[#1a2d28] cursor-pointer"
-                >
-                  <ShieldCheck size={17} /> See privacy design
-                </button>
-              </>
-            )}
+            <button
+              onClick={onStart}
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#205047] hover:bg-[#183f38] px-6 py-3.5 text-sm font-semibold text-white shadow-[0_8px_24px_rgba(32,80,71,0.25)] transition-all hover:-translate-y-0.5 dark:bg-[#2b695d] dark:hover:bg-[#357c6e] dark:shadow-[0_8px_24px_rgba(43,105,93,0.25)] cursor-pointer"
+            >
+              Get started <ArrowRight size={17} />
+            </button>
+            <button
+              onClick={onPrivacy}
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#d8e2de] bg-white/70 px-5 py-3.5 text-sm font-semibold text-[#41635c] transition-all hover:border-[#a9c5bc] hover:bg-white dark:border-[#243d36] dark:bg-[#142320]/80 dark:text-[#afd1c8] dark:hover:bg-[#1a2d28] cursor-pointer"
+            >
+              <ShieldCheck size={17} /> See privacy design
+            </button>
           </div>
 
           <div className="mt-12 grid max-w-lg grid-cols-3 gap-4 border-t border-[#e3ebe8] pt-6 dark:border-[#1d322c]">
@@ -121,7 +91,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({
             </div>
             <div className="flex flex-col gap-2 text-xs font-medium leading-4 text-[#66807a] dark:text-[#88a39d]">
               <span className="text-[#2f6f64] dark:text-[#52b5a2]"><Activity size={16} /></span>
-              Your personal baseline
+              Your baseline
             </div>
             <div className="flex flex-col gap-2 text-xs font-medium leading-4 text-[#66807a] dark:text-[#88a39d]">
               <span className="text-[#2f6f64] dark:text-[#52b5a2]"><HeartHandshake size={16} /></span>
@@ -151,7 +121,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({
                   <p className="mt-1 text-2xl font-semibold text-[#2f6f64] dark:text-[#65c5b2]">A little different</p>
                 </div>
                 <div className="rounded-full bg-[#e5f0ec] px-2.5 py-1 text-[11px] font-semibold text-[#2f6f64] dark:bg-[#1f3831] dark:text-[#7ad8c6]">
-                  Early Drift
+                  Changing
                 </div>
               </div>
 
@@ -167,7 +137,7 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({
               </svg>
 
               <p className="mt-3 text-sm leading-6 text-[#6f8981] dark:text-[#8ea7a0]">
-                Your recent routine looks slightly different from your 14-day baseline.
+                Your recent routine looks different from your usual baseline.
               </p>
             </div>
 
@@ -178,14 +148,14 @@ export const WelcomePage: React.FC<WelcomePageProps> = ({
               <div>
                 <p className="text-sm font-semibold text-[#604833] dark:text-[#e8be92]">A small suggestion</p>
                 <p className="mt-1 text-xs leading-5 text-[#8e7054] dark:text-[#be9f7d]">
-                  Before your next study task, try taking five quiet minutes away from the screen.
+                  Before your next task, try taking five quiet minutes away from the screen.
                 </p>
               </div>
             </div>
 
             <div className="mt-5 flex items-center justify-between text-xs text-[#a0b1ac] dark:text-[#6a837c]">
               <span className="flex items-center gap-1.5"><LockKeyhole size={12} /> Only you can see this</span>
-              <span>Student-Owned &bull; Private</span>
+              <span>FastAPI Backend Active</span>
             </div>
           </div>
         </div>
