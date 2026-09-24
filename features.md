@@ -203,13 +203,13 @@ MindTrace was engineered around a core tenet: **Engineering students resist clin
 * **Location**: [`frontend/src/pages/ResourcesPage.tsx`](file:///Users/nikhilgupt/Downloads/wellbeing-companion-prototype/frontend/src/pages/ResourcesPage.tsx)
 * **Features**:
   * **Intent-Driven Category Navigation**:
-    * "Calm Down Now" (Quick acute stress de-escalation)
-    * "Focus & Study" (Pomodoro and deep-work methods)
-    * "Improve Sleep" (Sleep hygiene protocols for engineering students)
-    * "Social Connection" (Overcoming imposter syndrome and academic isolation)
+    * "Calm down" (Quick acute stress de-escalation & breathing)
+    * "Clear my mind" (Mindfulness, mental decluttering & meditation)
+    * "Wind down" (Sleep hygiene & relaxation protocols for engineering students)
+    * "Focus" (Deep study concentration & binaural flow-state audio)
   * **Embedded Interactive Modals**:
     * **Breathing Visualizer (`BreathingModal.tsx`)**: Fullscreen animated visual guide supporting 4-7-8 Relaxation Breathing and Box Breathing (4-4-4-4) with second counters and tactile cues.
-    * **Ambient Audio Generator (`AudioPlayerModal.tsx`)**: Embedded soothing soundscapes (Binaural Beats, Rain on Tent, White Noise, Gentle Stream) with playback controls.
+    * **Ambient Audio Synthesizer (`AudioPlayerModal.tsx` & `ambientAudio.ts`)**: Built-in real-time Web Audio API synthesizer generating authentic soundscapes (procedural soothing rainfall, 432 Hz Solfeggio meditation drone with Tibetan singing bowl chime strikes, and 10 Hz alpha-wave binaural study drone) with live waveform visualizer, elapsed timer, and volume controls.
     * **Article Reader (`ArticleReaderModal.tsx`)**: In-app reader presenting evidence-based guides written specifically for STEM students.
 
 ---

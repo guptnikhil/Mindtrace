@@ -5,7 +5,6 @@ import {
   Brain,
   Moon,
   Target,
-  MessageCircle,
   Play,
   BookOpen,
   Headphones,
@@ -20,7 +19,7 @@ import { ArticleReaderModal } from '../components/resources/ArticleReaderModal';
 import { AudioPlayerModal } from '../components/resources/AudioPlayerModal';
 
 interface ResourcesPageProps {
-  navigate: (view: View) => void;
+  navigate?: (view: View) => void;
 }
 
 const INTENT_OPTIONS: Array<{
@@ -33,10 +32,9 @@ const INTENT_OPTIONS: Array<{
   { id: 'clear_mind', emoji: '🧠', label: 'Clear my mind', icon: Brain },
   { id: 'sleep', emoji: '😴', label: 'Wind down', icon: Moon },
   { id: 'focus', emoji: '🎯', label: 'Focus', icon: Target },
-  { id: 'support', emoji: '💬', label: 'Talk to someone', icon: MessageCircle },
 ];
 
-export const ResourcesPage: React.FC<ResourcesPageProps> = ({ navigate }) => {
+export const ResourcesPage: React.FC<ResourcesPageProps> = ({ navigate: _navigate }) => {
   const [selectedIntent, setSelectedIntent] = useState<ResourceIntent>('calm');
   const [selectedCategory, setSelectedCategory] = useState<ResourceCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -463,22 +461,6 @@ export const ResourcesPage: React.FC<ResourcesPageProps> = ({ navigate }) => {
         </div>
       )}
 
-      {/* SECTION 8: NEED MORE SUPPORT? CTA */}
-      <div className="p-6 sm:p-8 rounded-3xl bg-linear-to-r from-emerald-600 to-teal-700 text-white flex flex-col sm:flex-row items-center justify-between gap-6 shadow-md">
-        <div className="space-y-1 text-center sm:text-left">
-          <h2 className="text-xl font-bold">Need more support?</h2>
-          <p className="text-xs sm:text-sm text-emerald-100 max-w-xl">
-            Resources can help you take a small pause, but you don't have to handle everything alone. Connect with a college counsellor whenever you feel ready.
-          </p>
-        </div>
-
-        <button
-          onClick={() => navigate('counsellor')}
-          className="w-full sm:w-auto px-6 py-3 rounded-2xl bg-white text-emerald-800 font-bold text-xs sm:text-sm hover:bg-emerald-50 transition-colors shadow-sm shrink-0 flex items-center justify-center gap-2"
-        >
-          Talk to a Counsellor <ArrowRight className="w-4 h-4" />
-        </button>
-      </div>
 
       {/* Modals */}
       <BreathingModal
